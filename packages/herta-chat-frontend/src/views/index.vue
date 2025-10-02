@@ -11,6 +11,7 @@ const store = useMainStore()
 const userInput = ref('')
 const chatContainer = useTemplateRef('chatContainer')
 const freeOnly = ref(false)
+const showRooms = ref(true)
 const models = computed(() => {
   return store.models.filter((model) => {
     return !freeOnly.value || model.id.endsWith(':free')
@@ -20,12 +21,25 @@ const models = computed(() => {
 
 <template>
   <div class="container-home">
-    <div id="rooms">
+    <div
+      id="rooms"
+      :style="{
+        transform: `translateX(${showRooms ? '0' : '-100%'})`,
+      }"
+    >
       <ChatRooms />
     </div>
-    <div id="main">
+    <div
+      id="main"
+      :style="{
+        marginLeft: showRooms ? '250px' : '0',
+      }"
+    >
       <div class="header">
         <div id="api-key">
+          <var-button text round @click="showRooms = !showRooms"
+            ><var-icon name="menu-open"
+          /></var-button>
           <var-input
             class="grow"
             v-model="store.apiKey"

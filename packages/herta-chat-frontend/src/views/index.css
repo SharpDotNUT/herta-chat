@@ -9,6 +9,11 @@
   padding: 20px;
   width: min(100dvw, 250px);
   box-shadow: 0 0 10px #0007;
+  background-color: var(--color-body);
+  position: absolute;
+  height: 100%;
+  z-index: 10;
+  transition: transform 0.25s ease-in-out;
 }
 
 #main {
@@ -19,12 +24,18 @@
   gap: 20px;
   padding: 20px max(20px, calc(50% - 600px));
   overflow-y: hidden;
+  z-index: 1;
+  transition: margin 0.25s ease-in-out;
 }
 
 #api-key,
 #model-section {
   display: flex;
   gap: 10px;
+  * {
+    flex-shrink: 0;
+  }
+  align-items: center;
   .grow {
     flex-grow: 1;
   }
