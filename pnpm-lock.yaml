@@ -16,6 +16,9 @@ importers:
       '@varlet/ui':
         specifier: ^3.11.4
         version: 3.11.4(vue@3.5.22(typescript@5.9.3))
+      es-toolkit:
+        specifier: ^1.39.10
+        version: 1.39.10
       github-markdown-css:
         specifier: ^5.8.1
         version: 5.8.1
@@ -575,6 +578,9 @@ packages:
 
   error-stack-parser-es@1.0.5:
     resolution: {integrity: sha512-5qucVt2XcuGMcEGgWI7i+yZpmpByQ8J1lHhcL7PwqCwu9FPP3VUXzT4ltHe5i2z9dePwEHcDVOAfSnHsOlCXRA==}
+
+  es-toolkit@1.39.10:
+    resolution: {integrity: sha512-E0iGnTtbDhkeczB0T+mxmoVlT4YNweEKBLq7oaU4p11mecdsZpNWOglI4895Vh4usbQ+LsJiuLuI2L0Vdmfm2w==}
 
   escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
@@ -1664,6 +1670,8 @@ snapshots:
   entities@4.5.0: {}
 
   error-stack-parser-es@1.0.5: {}
+
+  es-toolkit@1.39.10: {}
 
   escalade@3.2.0: {}
 

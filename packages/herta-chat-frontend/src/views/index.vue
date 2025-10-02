@@ -2,7 +2,8 @@
 import { ref, onMounted, watch, nextTick, useTemplateRef } from 'vue'
 import MarkdownMessage from '@/components/MarkdownMessage.vue'
 import { useMainStore } from '@/stores/main'
-import { ReasoningEfforts } from '@/types/main'
+import { ReasoningEfforts } from '@/scripts/types'
+import { copyToClipboard } from '@/scripts/uiltsMain'
 
 const store = useMainStore()
 const userInput = ref('')
@@ -57,17 +58,22 @@ const saveMessages = () => {
             <br />
           </template>
           <MarkdownMessage :content="message.content" />
-          <var-button text round>
-            <var-icon
-              name="delete"
-              @click="
-                ((store.messages = [
-                  ...store.messages.slice(0, index),
-                  ...store.messages.slice(index + 1),
-                ]),
-                saveMessages())
-              "
-            />
+          <var-divider />
+          <var-button
+            text
+            round
+            @click="
+              ((store.messages = [
+                ...store.messages.slice(0, index),
+                ...store.messages.slice(index + 1),
+              ]),
+              saveMessages())
+            "
+          >
+            <var-icon name="delete" />
+          </var-button>
+          <var-button text round @click="copyToClipboard(message.content)">
+            <var-icon name="content-copy" />
           </var-button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { T_Message, T_ReasoningEffort } from '@/types/main'
+import type { T_Message, T_ReasoningEffort } from '@/scripts/types'
 import { watch } from 'vue'
 
 let abortController = null as AbortController | null
