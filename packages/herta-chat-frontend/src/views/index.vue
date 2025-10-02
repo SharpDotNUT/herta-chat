@@ -94,9 +94,13 @@ const saveMessages = () => {
         :disabled="store.isLoading"
       ></var-input>
       <div id="actions">
-        <var-select placeholder="思考模式" v-model="store.reasoning">
+        <var-select size="small" placeholder="思考模式" v-model="store.reasoning">
           <var-option :value="false" label="none" />
           <var-option v-for="effort in ReasoningEfforts" :value="effort" :label="effort" />
+        </var-select>
+        <var-select size="small" placeholder="启用盘古" v-model="store.enablePangu">
+          <var-option :value="false" label="禁用" />
+          <var-option :value="true" label="启用" />
         </var-select>
         <var-button
           v-if="!store.isLoading"

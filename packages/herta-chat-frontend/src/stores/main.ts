@@ -2,6 +2,7 @@ import { ref, computed, onMounted } from 'vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { T_Message, T_ReasoningEffort } from '@/scripts/types'
 import { watch } from 'vue'
+import pangu from 'pangu'
 
 let abortController = null as AbortController | null
 export const useMainStore = defineStore('main', () => {
@@ -10,6 +11,7 @@ export const useMainStore = defineStore('main', () => {
   const selectedModel = ref('')
   const messages = ref<T_Message[]>([])
   const isLoading = ref(false)
+  const enablePangu = ref(false)
   const reasoning = ref<T_ReasoningEffort | false>(false)
 
   onMounted(() => {
@@ -128,6 +130,8 @@ export const useMainStore = defineStore('main', () => {
         content: '',
         reasoning: reasoning.value ? '' : undefined,
       })
+      let currentMessage = ''
+      let currentReasoning = ''
       const last2ndMessage = messages.value[messages.value.length - 2]
       const lastMessage = messages.value[messages.value.length - 1]!
 
@@ -147,10 +151,18 @@ export const useMainStore = defineStore('main', () => {
             try {
               const data = JSON.parse(line.slice(6))
               if (data.choices && data.choices[0].delta.content) {
-                lastMessage.content += data.choices[0].delta.content
+                currentMessage += data.choices[0].delta.content
+                if (enablePangu.value) {
+                  currentMessage = pangu.spacingText(currentMessage)
+                }
+                lastMessage.content = currentMessage
               }
               if (data.choices && data.choices[0].delta.reasoning) {
-                lastMessage.reasoning += data.choices[0].delta.reasoning
+                currentReasoning += data.choices[0].delta.reasoning
+                if (enablePangu.value) {
+                  currentReasoning = pangu.spacingText(currentReasoning)
+                }
+                lastMessage.reasoning = currentReasoning
               }
               if (data.usage) {
                 if (last2ndMessage && last2ndMessage.role == 'user') {
@@ -183,6 +195,7 @@ export const useMainStore = defineStore('main', () => {
     messages,
     isLoading,
     reasoning,
+    enablePangu,
     fetchModels,
     abortRequest,
     sendMessage,
