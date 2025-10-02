@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      es-toolkit:
+        specifier: ^1.39.10
+        version: 1.39.10
       pangu:
         specifier: ^7.2.0
         version: 7.2.0
@@ -20,18 +23,12 @@ importers:
       '@varlet/ui':
         specifier: ^3.11.4
         version: 3.11.4(vue@3.5.22(typescript@5.9.3))
-      es-toolkit:
-        specifier: ^1.39.10
-        version: 1.39.10
       github-markdown-css:
         specifier: ^5.8.1
         version: 5.8.1
       highlight.js:
         specifier: ^11.11.1
         version: 11.11.1
-      i:
-        specifier: ^0.3.7
-        version: 0.3.7
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
@@ -637,10 +634,6 @@ packages:
   human-signals@8.0.1:
     resolution: {integrity: sha512-eKCa6bwnJhvxj14kZk5NCPc6Hb6BdsU9DZcOnmQKSnO1VKrfV0zCvtttPZUsBvjmNDn8rpcJfpwSYnHBjc95MQ==}
     engines: {node: '>=18.18.0'}
-
-  i@0.3.7:
-    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
-    engines: {node: '>=0.4'}
 
   is-docker@3.0.0:
     resolution: {integrity: sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ==}
@@ -1726,8 +1719,6 @@ snapshots:
   hookable@5.5.3: {}
 
   human-signals@8.0.1: {}
-
-  i@0.3.7: {}
 
   is-docker@3.0.0: {}
 

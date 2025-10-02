@@ -1,14 +1,14 @@
 {
   "name": "herta-chat",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.15.0",
   "dependencies": {
+    "es-toolkit": "^1.39.10",
     "pangu": "^7.2.0"
   }
 }

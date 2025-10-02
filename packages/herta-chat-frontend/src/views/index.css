@@ -2,6 +2,7 @@
   display: flex;
   overflow-y: hidden;
   background-color: var(--color-card);
+  position: relative;
 }
 
 #rooms {
