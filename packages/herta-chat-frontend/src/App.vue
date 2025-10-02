@@ -3,8 +3,10 @@ import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <var-app-bar> OpenRouter Chat Room </var-app-bar>
-  <RouterView />
+  <div id="app">
+    <var-app-bar> OpenRouter Chat Room </var-app-bar>
+    <RouterView id="container" />
+  </div>
 </template>
 
 <style lang="css" scoped>

@@ -22,6 +22,7 @@ onMounted(() => {
   console.log('从localStorage加载数据:', savedApiKey, savedModel, savedMessages)
   if (savedApiKey) {
     apiKey.value = savedApiKey
+    fetchModels()
   }
   if (savedModel) {
     selectedModel.value = savedModel
@@ -156,58 +157,77 @@ async function sendMessage() {
   }
   isLoading.value = false
 }
+
+const saveMessages = () => {
+  localStorage.setItem('HertaChat:messages', JSON.stringify(messages.value))
+}
 </script>
 
 <template>
-  <div class="container">
+  <div class="container-home">
     <div class="header">
-      <div class="api-key-section">
+      <div id="api-key">
         <var-input
+          id="api-key-input"
           v-model="apiKey"
           type="password"
+          size="small"
           placeholder="输入您的OpenRouter API密钥"
-          class="api-key-input"
         />
         <var-button @click="fetchModels" :disabled="!apiKey">获取模型</var-button>
       </div>
-
-      <div class="model-selector" v-if="models.length > 0">
-        <label for="model">选择模型:</label>
-        <var-select v-model="selectedModel" id="model">
-          <var-option
-            v-for="model in models"
-            :key="model.id"
-            :value="model.id"
-            :label="model.name || model.id"
-          >
-          </var-option>
-        </var-select>
-      </div>
+      <br />
+      <var-select
+        v-if="models.length > 0"
+        placeholder="选择模型"
+        v-model="selectedModel"
+        size="small"
+        id="model"
+      >
+        <var-option
+          v-for="model in models"
+          :key="model.id"
+          :value="model.id"
+          :label="model.name || model.id"
+        >
+        </var-option>
+      </var-select>
     </div>
-
-    <div class="chat-container" v-if="selectedModel">
-      <div class="chat-messages" ref="chatContainer">
-        <var-card
-          v-for="(message, index) in messages"
-          :key="index"
-          :class="['message', message.role]"
+    <div id="chat-messages" ref="chatContainer">
+      <div v-for="(message, index) in messages" :key="index">
+        <div
+          class="message-content"
+          :class="{
+            user: message.role === 'user',
+            assistant: message.role === 'assistant',
+          }"
         >
           <MarkdownMessage :content="message.content" />
-        </var-card>
+          <var-button text round>
+            <var-icon
+              name="delete"
+              @click="
+                ((messages = [...messages.slice(0, index), ...messages.slice(index + 1)]),
+                saveMessages())
+              "
+            />
+          </var-button>
+        </div>
       </div>
-
-      <div class="chat-input">
-        <var-input
-          textarea
-          v-model="userInput"
-          placeholder="输入您的消息..."
-          @keydown.enter.prevent="sendMessage"
-          :disabled="isLoading"
-        ></var-input>
-        <var-button @click="sendMessage" :disabled="isLoading || !userInput.trim()"
-          >发送</var-button
-        >
-      </div>
+    </div>
+    <div id="chat-input">
+      <var-input
+        id="input"
+        textarea
+        rows="4"
+        v-model="userInput"
+        placeholder="输入您的消息..."
+        @keydown.enter.prevent="sendMessage"
+        :disabled="isLoading"
+      ></var-input>
+      <var-button @click="sendMessage" type="primary" :disabled="isLoading || !userInput.trim()"
+        >发送</var-button
+      >
     </div>
   </div>
 </template>

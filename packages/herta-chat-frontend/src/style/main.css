@@ -1,3 +1,7 @@
+@import url('https://fonts.font.im/css?family=Noto+Sans+SC');
+@import url('https://fonts.font.im/css?family=Outfit');
+@import url('https://fonts.font.im/css?family=JetBrains+Mono');
+
 * {
   margin: 0;
   padding: 0;
@@ -11,4 +15,16 @@ body {
   color: var(--color-text);
   background-color: var(--color-body);
   color-scheme: var(--color-scheme);
+  font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+  font-weight: 500;
+  pre,
+  code {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+}
+
+:root {
+  --color-level-1: color-mix(in srgb, var(--color-body), var(--color-text) 10%;);
+  --color-level-2: color-mix(in srgb, var(--color-body), var(--color-text) 20%;);
+  --color-level-3: color-mix(in srgb, var(--color-body), var(--color-text) 30%);
 }

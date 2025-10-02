@@ -11,7 +11,7 @@ app.use(createPinia())
 app.use(router)
 app.use(Varlet)
 
-app.mount('#app')
+app.mount('#vue-app')
 
 import '@varlet/ui/es/style'
 import './style/main.css'

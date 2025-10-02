@@ -45,5 +45,6 @@ import 'github-markdown-css/github-markdown-light.css'
 <style scoped>
 .markdown-body {
   background-color: transparent !important;
+  font-family: inherit;
 }
 </style>

@@ -1,0 +1,11 @@
+#app {
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  height: 100dvh;
+}
+
+#container {
+  flex-grow: 1;
+  overflow-y: auto;
+}
