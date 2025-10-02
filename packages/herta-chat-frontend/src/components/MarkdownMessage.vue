@@ -1,5 +1,7 @@
 <template>
-  <div class="message-content markdown-body" ref="contentElement"></div>
+  <div>
+    <div class="message-content markdown-body" ref="contentElement"></div>
+  </div>
 </template>
 
 <script setup lang="ts">

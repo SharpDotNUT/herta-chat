@@ -27,6 +27,11 @@
   .message-content.user {
     background-color: skyblue;
   }
+  .reasoning {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: whitesmoke;
+  }
   > * {
     gap: 10px;
     flex-shrink: 0;
@@ -38,6 +43,14 @@
   gap: 10px;
   #input {
     flex-grow: 1;
+  }
+  #actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    > * {
+      height: 100%;
+    }
   }
   > * {
     height: 100%;

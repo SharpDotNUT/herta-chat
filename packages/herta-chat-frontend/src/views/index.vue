@@ -2,6 +2,7 @@
 import { ref, onMounted, watch, nextTick, useTemplateRef } from 'vue'
 import MarkdownMessage from '@/components/MarkdownMessage.vue'
 import { useMainStore } from '@/stores/main'
+import { ReasoningEfforts } from '@/types/main'
 
 const store = useMainStore()
 const userInput = ref('')
@@ -51,6 +52,10 @@ const saveMessages = () => {
             assistant: message.role === 'assistant',
           }"
         >
+          <template v-if="message.reasoning">
+            <MarkdownMessage class="reasoning" :content="message.reasoning" />
+            <br />
+          </template>
           <MarkdownMessage :content="message.content" />
           <var-button text round>
             <var-icon
@@ -77,12 +82,19 @@ const saveMessages = () => {
         @keydown.enter.prevent="store.sendMessage"
         :disabled="store.isLoading"
       ></var-input>
-      <var-button
-        @click="store.sendMessage(userInput)"
-        type="primary"
-        :disabled="store.isLoading || !userInput.trim()"
-        >发送</var-button
-      >
+      <div id="actions">
+        <var-select placeholder="思考模式" v-model="store.reasoning">
+          <var-option :value="false" label="none" />
+          <var-option v-for="effort in ReasoningEfforts" :value="effort" :label="effort" />
+        </var-select>
+        <var-button
+          block
+          @click="store.sendMessage(userInput)"
+          type="primary"
+          :disabled="store.isLoading || !userInput.trim()"
+          >发送</var-button
+        >
+      </div>
     </div>
   </div>
 </template>

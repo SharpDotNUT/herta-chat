@@ -1,6 +1,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { T_Message } from '@/types/main'
+import type { T_Message, T_ReasoningEffort } from '@/types/main'
 import { watch } from 'vue'
 
 let abortController = null as AbortController | null
@@ -10,6 +10,7 @@ export const useMainStore = defineStore('main', () => {
   const selectedModel = ref('')
   const messages = ref<T_Message[]>([])
   const isLoading = ref(false)
+  const reasoning = ref<T_ReasoningEffort | false>(false)
 
   onMounted(() => {
     const savedApiKey = localStorage.getItem('HertaChat:apiKey')
@@ -98,6 +99,11 @@ export const useMainStore = defineStore('main', () => {
             ...messages.value.map((m) => ({ role: m.role, content: m.content })),
             { role: 'user', content: userMessage },
           ],
+          reasoning: reasoning.value
+            ? {
+                effort: reasoning.value,
+              }
+            : null,
           stream: true,
         }),
         signal: abortController.signal,
@@ -109,12 +115,12 @@ export const useMainStore = defineStore('main', () => {
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
-      let assistantMessage = ''
 
       // 添加一个空的助手消息用于流式渲染
       messages.value.push({
         role: 'assistant',
         content: '',
+        reasoning: reasoning.value ? '' : undefined,
       })
       const lastMessage = messages.value[messages.value.length - 1]!
 
@@ -134,8 +140,10 @@ export const useMainStore = defineStore('main', () => {
             try {
               const data = JSON.parse(line.slice(6))
               if (data.choices && data.choices[0].delta.content) {
-                assistantMessage += data.choices[0].delta.content
-                lastMessage.content = assistantMessage
+                lastMessage.content += data.choices[0].delta.content
+              }
+              if (data.choices && data.choices[0].delta.reasoning) {
+                lastMessage.reasoning += data.choices[0].delta.reasoning
               }
             } catch (e) {
               console.error('解析流数据时出错:', e)
@@ -161,6 +169,7 @@ export const useMainStore = defineStore('main', () => {
     selectedModel,
     messages,
     isLoading,
+    reasoning,
     fetchModels,
     sendMessage,
   }
