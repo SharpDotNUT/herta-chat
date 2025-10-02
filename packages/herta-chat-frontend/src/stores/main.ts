@@ -1,34 +1,37 @@
 import { ref, computed, onMounted } from 'vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { T_Message, T_ReasoningEffort } from '@/scripts/types'
+import type { T_Message, T_ReasoningEffort, T_Room } from '@/scripts/types'
 import { watch } from 'vue'
 import pangu from 'pangu'
+import { Snackbar } from '@varlet/ui'
+import type { T_Model } from '@/scripts/types-model'
 
 let abortController = null as AbortController | null
 export const useMainStore = defineStore('main', () => {
+  const chatRooms = ref<T_Room[]>([])
+  const currentRoomID = ref('')
+  const currentRoom = computed(() => {
+    return chatRooms.value.find((room) => room.uuid === currentRoomID.value)
+  })
+  const currentModel = computed(() => {
+    return models.value.find((model) => model.id === currentRoom.value?.config.model)
+  })
   const apiKey = ref('')
-  const models = ref<any[]>([])
-  const selectedModel = ref('')
-  const messages = ref<T_Message[]>([])
+  const models = ref<T_Model[]>([])
   const isLoading = ref(false)
   const enablePangu = ref(false)
   const reasoning = ref<T_ReasoningEffort | false>(false)
 
   onMounted(() => {
     const savedApiKey = localStorage.getItem('HertaChat:apiKey')
-    const savedModel = localStorage.getItem('HertaChat:selectedModel')
-    const savedMessages = localStorage.getItem('HertaChat:messages')
+    const savedRooms = localStorage.getItem('HertaChat:rooms')
 
-    console.log('从localStorage加载数据:', savedApiKey, savedModel, savedMessages)
     if (savedApiKey) {
       apiKey.value = savedApiKey
       fetchModels()
     }
-    if (savedModel) {
-      selectedModel.value = savedModel
-    }
-    if (savedMessages) {
-      messages.value = JSON.parse(savedMessages)
+    if (savedRooms) {
+      chatRooms.value = JSON.parse(savedRooms)
     }
   })
 
@@ -40,13 +43,12 @@ export const useMainStore = defineStore('main', () => {
     }
   })
 
-  watch(selectedModel, (newModel) => {
-    if (newModel) {
-      localStorage.setItem('HertaChat:selectedModel', newModel)
-    } else {
-      localStorage.removeItem('HertaChat:selectedModel')
-    }
-  })
+  watch(
+    () => currentRoom.value?.config.model,
+    (newModel) => {
+      saveData()
+    },
+  )
 
   async function fetchModels() {
     try {
@@ -61,18 +63,29 @@ export const useMainStore = defineStore('main', () => {
       }
 
       const data = await response.json()
-      models.value = data.data || []
+      models.value = data.data || ([] as T_Model[])
     } catch (error) {
       console.error('获取模型时出错:', error)
       alert('获取模型失败，请检查API密钥是否正确')
     }
   }
 
-  const saveMessages = () => {
-    return localStorage.setItem('HertaChat:messages', JSON.stringify(messages.value))
+  const deleteMessage = (index: number) => {
+    if (!currentRoom.value) return
+    if (index < 0 || index >= currentRoom.value?.messages.length) return
+    currentRoom.value.messages = [
+      ...currentRoom.value.messages.slice(0, index),
+      ...currentRoom.value.messages.slice(index + 1),
+    ]
+    saveData()
+  }
+
+  const saveData = () => {
+    if (!chatRooms.value) return
+    return localStorage.setItem('HertaChat:rooms', JSON.stringify(chatRooms.value))
   }
   const abortRequest = () => {
-    saveMessages()
+    saveData()
     isLoading.value = false
     if (abortController) {
       abortController.abort()
@@ -80,9 +93,26 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
+  const createRoom = () => {
+    chatRooms.value.push({
+      uuid: crypto.randomUUID(),
+      name: '新房间',
+      messages: [],
+      config: {
+        model: '',
+      },
+      modify: new Date().getTime(),
+    })
+  }
+
   async function sendMessage(message: string) {
     if (!message.trim() || isLoading.value) return
-    messages.value.push({
+    if (!currentRoom.value) {
+      Snackbar.error('请选择一个房间')
+      return
+    }
+    currentRoom.value.modify = new Date().getTime()
+    currentRoom.value.messages.push({
       role: 'user',
       content: message.trim(),
     })
@@ -103,9 +133,9 @@ export const useMainStore = defineStore('main', () => {
           Authorization: `Bearer ${apiKey.value}`,
         },
         body: JSON.stringify({
-          model: selectedModel.value,
+          model: currentRoom.value.config.model,
           messages: [
-            ...messages.value.map((m) => ({ role: m.role, content: m.content })),
+            ...currentRoom.value.messages.map((m) => ({ role: m.role, content: m.content })),
             { role: 'user', content: userMessage },
           ],
           reasoning: reasoning.value
@@ -125,15 +155,15 @@ export const useMainStore = defineStore('main', () => {
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
 
-      messages.value.push({
+      currentRoom.value.messages.push({
         role: 'assistant',
         content: '',
         reasoning: reasoning.value ? '' : undefined,
       })
       let currentMessage = ''
       let currentReasoning = ''
-      const last2ndMessage = messages.value[messages.value.length - 2]
-      const lastMessage = messages.value[messages.value.length - 1]!
+      const last2ndMessage = currentRoom.value.messages[currentRoom.value.messages.length - 2]
+      const lastMessage = currentRoom.value.messages[currentRoom.value.messages.length - 1]!
 
       while (true) {
         const { done, value } = await reader.read()
@@ -176,7 +206,7 @@ export const useMainStore = defineStore('main', () => {
           }
         }
       }
-      saveMessages()
+      saveData()
     } catch (error: any) {
       if (error.name === 'AbortError') {
         console.log('请求被取消')
@@ -186,19 +216,24 @@ export const useMainStore = defineStore('main', () => {
       }
     }
     isLoading.value = false
+    currentRoom.value.modify = new Date().getTime()
   }
 
   return {
+    chatRooms,
+    currentRoomID,
     apiKey,
     models,
-    selectedModel,
-    messages,
     isLoading,
     reasoning,
     enablePangu,
+    currentRoom,
+    currentModel,
     fetchModels,
+    deleteMessage,
     abortRequest,
     sendMessage,
+    createRoom,
   }
 })
 

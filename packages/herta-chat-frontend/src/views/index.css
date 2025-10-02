@@ -1,8 +1,23 @@
 .container-home {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  overflow-y: hidden;
+  background-color: var(--color-card);
+}
+
+#rooms {
+  flex-shrink: 0;
   padding: 20px;
+  width: min(100dvw, 250px);
+  box-shadow: 0 0 10px #0007;
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+  gap: 20px;
+  padding: 20px max(20px, calc(50% - 600px));
   overflow-y: hidden;
 }
 
@@ -55,4 +70,11 @@
   > * {
     height: 100%;
   }
+}
+
+#tip {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
