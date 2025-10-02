@@ -2,6 +2,7 @@ export type T_Message = {
   role: 'system' | 'user' | 'assistant'
   content: string
   reasoning?: string
+  tokens?: number
 }
 
 export const ReasoningEfforts = ['minimal', 'low', 'medium', 'high'] as const

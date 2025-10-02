@@ -123,12 +123,12 @@ export const useMainStore = defineStore('main', () => {
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
 
-      // 添加一个空的助手消息用于流式渲染
       messages.value.push({
         role: 'assistant',
         content: '',
         reasoning: reasoning.value ? '' : undefined,
       })
+      const last2ndMessage = messages.value[messages.value.length - 2]
       const lastMessage = messages.value[messages.value.length - 1]!
 
       while (true) {
@@ -151,6 +151,12 @@ export const useMainStore = defineStore('main', () => {
               }
               if (data.choices && data.choices[0].delta.reasoning) {
                 lastMessage.reasoning += data.choices[0].delta.reasoning
+              }
+              if (data.usage) {
+                if (last2ndMessage && last2ndMessage.role == 'user') {
+                  last2ndMessage.tokens = data.usage.prompt_tokens
+                }
+                lastMessage.tokens = data.usage.completion_tokens
               }
             } catch (e) {
               console.error('解析流数据时出错:', e)
