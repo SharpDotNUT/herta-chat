@@ -26,6 +26,13 @@ const MDIT = MarkdownIt({
 const contentElement = useTemplateRef('contentElement')
 const renderedContent = ref('')
 
+const highlight = () => {
+  throttle(() => {
+    if (!contentElement.value) return
+    hljs.highlightElement(contentElement.value)
+  }, 5000)
+}
+
 watch(
   () => props.content,
   (newValue) => {
@@ -35,13 +42,14 @@ watch(
       morphdom(contentElement.value, `<div>${renderedContent.value}</div>`, {
         childrenOnly: true,
       })
-      hljs.highlightAll()
+      highlight()
     })
   },
   { immediate: true },
 )
 
 import 'github-markdown-css/github-markdown-light.css'
+import { throttle } from 'es-toolkit'
 </script>
 
 <style scoped>
