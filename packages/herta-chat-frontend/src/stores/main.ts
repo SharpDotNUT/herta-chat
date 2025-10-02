@@ -45,6 +45,7 @@ export const useMainStore = defineStore('main', () => {
       localStorage.removeItem('HertaChat:selectedModel')
     }
   })
+
   async function fetchModels() {
     try {
       const response = await fetch('https://openrouter.ai/api/v1/models', {
@@ -64,26 +65,32 @@ export const useMainStore = defineStore('main', () => {
       alert('获取模型失败，请检查API密钥是否正确')
     }
   }
+
+  const saveMessages = () => {
+    return localStorage.setItem('HertaChat:messages', JSON.stringify(messages.value))
+  }
+  const abortRequest = () => {
+    saveMessages()
+    isLoading.value = false
+    if (abortController) {
+      abortController.abort()
+      abortController = null
+    }
+  }
+
   async function sendMessage(message: string) {
     if (!message.trim() || isLoading.value) return
-
-    // 添加用户消息
     messages.value.push({
       role: 'user',
       content: message.trim(),
     })
-
     const userMessage = message
     message = ''
     isLoading.value = true
-
-    // 如果有之前的请求，取消它
     if (abortController) {
       abortController.abort()
     }
-
     abortController = new AbortController()
-
     try {
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -151,7 +158,7 @@ export const useMainStore = defineStore('main', () => {
           }
         }
       }
-      localStorage.setItem('HertaChat:messages', JSON.stringify(messages.value))
+      saveMessages()
     } catch (error: any) {
       if (error.name === 'AbortError') {
         console.log('请求被取消')
@@ -171,6 +178,7 @@ export const useMainStore = defineStore('main', () => {
     isLoading,
     reasoning,
     fetchModels,
+    abortRequest,
     sendMessage,
   }
 })

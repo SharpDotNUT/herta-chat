@@ -94,12 +94,14 @@ const saveMessages = () => {
           <var-option v-for="effort in ReasoningEfforts" :value="effort" :label="effort" />
         </var-select>
         <var-button
+          v-if="!store.isLoading"
           block
           @click="store.sendMessage(userInput)"
           type="primary"
-          :disabled="store.isLoading || !userInput.trim()"
+          :disabled="!userInput.trim()"
           >发送</var-button
         >
+        <var-button v-else block @click="store.abortRequest" type="danger">停止</var-button>
       </div>
     </div>
   </div>
