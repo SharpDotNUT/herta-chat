@@ -5,10 +5,17 @@ import { useMainStore } from '@/stores/main'
 import { ReasoningEfforts } from '@/scripts/types'
 import { copyToClipboard } from '@/scripts/uiltsMain'
 import ChatRooms from '@/components/ChatRooms.vue'
+import { computed } from 'vue'
 
 const store = useMainStore()
 const userInput = ref('')
 const chatContainer = useTemplateRef('chatContainer')
+const freeOnly = ref(false)
+const models = computed(() => {
+  return store.models.filter((model) => {
+    return !freeOnly.value || model.id.endsWith(':free')
+  })
+})
 </script>
 
 <template>
@@ -20,7 +27,7 @@ const chatContainer = useTemplateRef('chatContainer')
       <div class="header">
         <div id="api-key">
           <var-input
-            id="api-key-input"
+            class="grow"
             v-model="store.apiKey"
             type="password"
             size="small"
@@ -28,22 +35,25 @@ const chatContainer = useTemplateRef('chatContainer')
           />
           <var-button @click="store.fetchModels" :disabled="!store.apiKey">获取模型</var-button>
         </div>
-        <br />
-        <var-select
-          v-if="store.currentRoom && store.models.length > 0"
-          placeholder="选择模型"
-          v-model="store.currentRoom.config.model"
-          size="small"
-          id="model"
-        >
-          <var-option
-            v-for="model in store.models"
-            :key="model.id"
-            :value="model.id"
-            :label="model.name || model.id"
+        <br v-if="store.currentRoom" />
+        <div v-if="store.currentRoom" id="model-section">
+          <var-select
+            class="grow"
+            placeholder="选择模型"
+            v-model="store.currentRoom.config.model"
+            size="small"
+            id="model"
           >
-          </var-option>
-        </var-select>
+            <var-option
+              v-for="model in models"
+              :key="model.id"
+              :value="model.id"
+              :label="model.name || model.id"
+            >
+            </var-option>
+          </var-select>
+          <p id="free-only"><var-checkbox v-model="freeOnly" /><span>只看免费</span></p>
+        </div>
       </div>
       <div v-if="store.currentRoom && store.currentModel" id="chat-messages" ref="chatContainer">
         <div v-for="(message, index) in store.currentRoom?.messages" :key="index">
