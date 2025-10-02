@@ -1,6 +1,5 @@
 {
   "name": "herta-chat-frontend",
-  "version": "0.0.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -17,10 +16,8 @@
   "dependencies": {
     "@types/markdown-it": "^14.1.2",
     "@varlet/ui": "^3.11.4",
-    "es-toolkit": "^1.39.10",
     "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.11.1",
-    "i": "^0.3.7",
     "markdown-it": "^14.1.0",
     "morphdom": "^2.7.7",
     "pinia": "^3.0.3",
