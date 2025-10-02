@@ -76,7 +76,9 @@ const saveMessages = () => {
             <var-button text round @click="copyToClipboard(message.content)">
               <var-icon name="content-copy" />
             </var-button>
-            <span v-if="message.tokens"> {{ message.tokens }} tokens </span>
+            <span v-if="message.tokens"> {{ message.tokens }} tokens | </span>
+            <span v-if="message.reasoning"> {{ message.reasoning.length }} 思考字符 | </span>
+            <span>{{ message.content.length }} 字符</span>
           </div>
         </div>
       </div>
