@@ -29,6 +29,24 @@ const syncStore = useSyncStore();
     <var-button @click="syncStore.getData()" size="small" block>
       测试连接
     </var-button>
+    <var-divider />
+    <h3>预设</h3>
+    <p>
+      <var-link
+        type="primary"
+        href="https://openrouter.ai/docs/features/presets"
+        target="_blank">
+        关于预设
+      </var-link>
+      <span>&nbsp;|&nbsp;</span>
+      <var-link
+        type="primary"
+        href="https://openrouter.ai/settings/presets"
+        target="_blank">
+        配置预设
+      </var-link>
+    </p>
+    <var-input v-model="store.preset" size="small" placeholder="输入预设 ID" />
   </div>
 </template>
 

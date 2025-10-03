@@ -22,6 +22,7 @@ export const useMainStore = defineStore('main', () => {
   });
   const apiKey = ref('');
   const models = ref<T_Model[]>([]);
+  const preset = ref<string>('');
   const isFetchingModels = ref(false);
   const isLoading = ref(false);
   const enablePangu = ref(false);
@@ -30,6 +31,7 @@ export const useMainStore = defineStore('main', () => {
   onMounted(() => {
     const savedApiKey = localStorage.getItem('HertaChat:apiKey');
     const savedRooms = localStorage.getItem('HertaChat:rooms');
+    const modelsCache = localStorage.getItem('HertaChat:models');
 
     if (savedApiKey) {
       apiKey.value = savedApiKey;
@@ -37,6 +39,9 @@ export const useMainStore = defineStore('main', () => {
     }
     if (savedRooms) {
       chatRooms.value = JSON.parse(savedRooms);
+    }
+    if (modelsCache) {
+      models.value = JSON.parse(modelsCache);
     }
   });
 
@@ -70,6 +75,7 @@ export const useMainStore = defineStore('main', () => {
 
       const data = await response.json();
       models.value = data.data || ([] as T_Model[]);
+      localStorage.setItem('HertaChat:models', JSON.stringify(models.value));
     } catch (error) {
       Snackbar.error('获取模型失败，请检查 API 密钥是否正确');
     }
@@ -145,6 +151,7 @@ export const useMainStore = defineStore('main', () => {
           },
           body: JSON.stringify({
             model: currentRoom.value.config.model,
+            preset: preset.value ?? undefined,
             messages: [
               ...currentRoom.value.messages.map((m) => ({
                 role: m.role,
@@ -264,6 +271,7 @@ export const useMainStore = defineStore('main', () => {
     chatRooms,
     currentRoomID,
     apiKey,
+    preset,
     models,
     isFetchingModels,
     isLoading,
