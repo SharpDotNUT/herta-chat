@@ -6,7 +6,6 @@ import { ReasoningEfforts } from '@/scripts/types';
 import { copyToClipboard } from '@/scripts/uiltsMain';
 import ChatRooms from '@/components/ChatRooms.vue';
 import { computed } from 'vue';
-import CloudSync from '@/components/CloudSync.vue';
 
 const store = useMainStore();
 const userInput = ref('');
@@ -36,47 +35,34 @@ const updateMessage = () => {
       :style="{
         transform: `translateX(${showRooms ? '0' : '-100%'})`
       }">
-      <ChatRooms />
+      <ChatRooms @close="showRooms = false" />
     </div>
     <div
       id="main"
       :style="{
         marginLeft: showRooms ? '250px' : '0'
       }">
-      <div class="header">
-        <div id="api-key">
-          <var-button text round @click="showRooms = !showRooms">
-            <var-icon name="menu-open" />
-          </var-button>
-          <var-input
-            class="grow"
-            v-model="store.apiKey"
-            type="password"
-            size="small"
-            placeholder="输入您的OpenRouter API密钥" />
-          <var-button @click="store.fetchModels" :disabled="!store.apiKey">
-            获取模型
-          </var-button>
-        </div>
-        <br v-if="store.currentRoom" />
-        <div v-if="store.currentRoom" id="model-section">
-          <var-select
-            class="grow"
-            placeholder="选择模型"
-            v-model="store.currentRoom.config.model"
-            size="small"
-            id="model">
-            <var-option
-              v-for="model in models"
-              :key="model.id"
-              :value="model.id"
-              :label="model.name || model.id"></var-option>
-          </var-select>
-          <p id="free-only">
-            <var-checkbox v-model="freeOnly" />
-            <span>只看免费</span>
-          </p>
-        </div>
+      <div id="header">
+        <var-button text round @click="showRooms = !showRooms">
+          <var-icon name="menu-open" />
+        </var-button>
+        <var-select
+          v-if="store.currentRoom"
+          class="grow"
+          placeholder="选择模型"
+          v-model="store.currentRoom.config.model"
+          size="small"
+          id="model">
+          <var-option
+            v-for="model in models"
+            :key="model.id"
+            :value="model.id"
+            :label="model.name || model.id"></var-option>
+        </var-select>
+        <p v-if="store.currentRoom" id="free-only">
+          <var-checkbox v-model="freeOnly" />
+          <span>只看免费</span>
+        </p>
       </div>
       <div
         v-if="store.currentRoom && store.currentModel"

@@ -1,0 +1,34 @@
+<script setup lang="ts">
+import { useMainStore } from '@/stores/main';
+import { useSyncStore } from '@/stores/sync';
+
+const store = useMainStore();
+const syncStore = useSyncStore();
+</script>
+
+<template>
+  <div class="container-setting">
+    <h3>API 密钥</h3>
+    <var-input
+      class="grow"
+      v-model="store.apiKey"
+      type="password"
+      size="small"
+      placeholder="输入您的 OpenRouter API密钥" />
+    <var-divider />
+    <h3>云同步</h3>
+    <var-input placeholder="服务器 URL" size="small" v-model="syncStore.url" />
+    <var-input placeholder="TOKEN" size="small" v-model="syncStore.token" />
+    <var-button @click="syncStore.getData()" size="small" block>
+      测试连接
+    </var-button>
+  </div>
+</template>
+
+<style lang="css" scoped>
+.container-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+</style>

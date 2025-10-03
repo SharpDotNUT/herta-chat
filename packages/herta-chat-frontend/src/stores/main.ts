@@ -7,10 +7,9 @@ import { Snackbar } from '@varlet/ui';
 import type { T_Model } from '@/scripts/types-model';
 import { useSyncStore } from './sync';
 
-const syncStore = useSyncStore();
-
 let abortController = null as AbortController | null;
 export const useMainStore = defineStore('main', () => {
+  const syncStore = useSyncStore();
   const chatRooms = ref<T_Room[]>([]);
   const currentRoomID = ref('');
   const currentRoom = computed(() => {

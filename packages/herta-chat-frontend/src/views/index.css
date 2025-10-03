@@ -29,18 +29,15 @@
   transition: margin 0.25s ease-in-out;
 }
 
-#api-key,
-#model-section {
+#header {
   display: flex;
   gap: 10px;
-  * {
-    flex-shrink: 0;
-  }
   align-items: center;
   .grow {
     flex-grow: 1;
   }
 }
+
 #free-only {
   display: flex;
   align-items: center;
