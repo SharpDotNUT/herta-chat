@@ -15,6 +15,13 @@ const syncStore = useSyncStore();
       type="password"
       size="small"
       placeholder="输入您的 OpenRouter API密钥" />
+    <var-button
+      size="small"
+      block
+      @click="store.fetchModels"
+      :loading="store.isFetchingModels">
+      更新模型列表
+    </var-button>
     <var-divider />
     <h3>云同步</h3>
     <var-input placeholder="服务器 URL" size="small" v-model="syncStore.url" />

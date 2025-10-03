@@ -42,6 +42,9 @@ const updateMessage = () => {
       :style="{
         marginLeft: showRooms ? '250px' : '0'
       }">
+      <var-alert v-if="!store.apiKey" type="danger">
+        请在右上角设置配置 API 密钥
+      </var-alert>
       <div id="header">
         <var-button text round @click="showRooms = !showRooms">
           <var-icon name="menu-open" />

@@ -22,6 +22,7 @@ export const useMainStore = defineStore('main', () => {
   });
   const apiKey = ref('');
   const models = ref<T_Model[]>([]);
+  const isFetchingModels = ref(false);
   const isLoading = ref(false);
   const enablePangu = ref(false);
   const reasoning = ref<T_ReasoningEffort | false>(false);
@@ -55,6 +56,7 @@ export const useMainStore = defineStore('main', () => {
   );
 
   async function fetchModels() {
+    isFetchingModels.value = true;
     try {
       const response = await fetch('https://openrouter.ai/api/v1/models', {
         headers: {
@@ -69,9 +71,9 @@ export const useMainStore = defineStore('main', () => {
       const data = await response.json();
       models.value = data.data || ([] as T_Model[]);
     } catch (error) {
-      console.error('获取模型时出错:', error);
-      alert('获取模型失败，请检查API密钥是否正确');
+      Snackbar.error('获取模型失败，请检查 API 密钥是否正确');
     }
+    isFetchingModels.value = false;
   }
 
   const deleteMessage = (index: number) => {
@@ -263,6 +265,7 @@ export const useMainStore = defineStore('main', () => {
     currentRoomID,
     apiKey,
     models,
+    isFetchingModels,
     isLoading,
     reasoning,
     enablePangu,
