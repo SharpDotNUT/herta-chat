@@ -2,13 +2,16 @@
   "name": "herta-chat",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "format": "prettier --write \"**/src/**/*.*\""
+  },
+  "license": "Apache-2.0",
   "packageManager": "pnpm@10.15.0",
   "dependencies": {
     "es-toolkit": "^1.39.10",
     "pangu": "^7.2.0"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2"
   }
 }

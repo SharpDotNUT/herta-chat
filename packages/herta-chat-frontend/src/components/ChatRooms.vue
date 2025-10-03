@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { useMainStore } from '@/stores/main'
-import { watchEffect } from 'vue'
-import { ref } from 'vue'
-import CloudSync from './CloudSync.vue'
+import { useMainStore } from '@/stores/main';
+import { watchEffect } from 'vue';
+import { ref } from 'vue';
+import CloudSync from './CloudSync.vue';
 
-const store = useMainStore()
-const renameRoomID = ref('')
-const roomName = ref('')
+const store = useMainStore();
+const renameRoomID = ref('');
+const roomName = ref('');
 
-const showConfig = ref(false)
-const showDialog = ref(false)
+const showConfig = ref(false);
+const showDialog = ref(false);
 watchEffect(() => {
-  showDialog.value = renameRoomID.value !== ''
-})
+  showDialog.value = renameRoomID.value !== '';
+});
 const renameRoom = () => {
   store.chatRooms = store.chatRooms.map((room) => {
     if (room.uuid === renameRoomID.value) {
-      room.name = roomName.value
+      room.name = roomName.value;
     }
-    return room
-  })
-  renameRoomID.value = ''
-}
+    return room;
+  });
+  renameRoomID.value = '';
+};
 </script>
 
 <template>
@@ -38,20 +38,23 @@ const renameRoom = () => {
         class="room"
         v-for="room in store.chatRooms.sort((a, b) => b.modify - a.modify)"
         border
-        @click="store.currentRoomID = room.uuid"
-      >
+        @click="store.currentRoomID = room.uuid">
         <span>{{ room.name }}</span>
-        <var-button text size="small" @click="((renameRoomID = room.uuid), (roomName = room.name))"
-          >重命名</var-button
-        >
+        <var-button
+          text
+          size="small"
+          @click="((renameRoomID = room.uuid), (roomName = room.name))">
+          重命名
+        </var-button>
         <var-button
           text
           round
           @click="
-            ((store.chatRooms = store.chatRooms.filter((_room) => _room.uuid !== room.uuid)),
+            ((store.chatRooms = store.chatRooms.filter(
+              (_room) => _room.uuid !== room.uuid
+            )),
             (store.currentRoomID = ''))
-          "
-        >
+          ">
           <var-icon name="delete" />
         </var-button>
       </var-cell>

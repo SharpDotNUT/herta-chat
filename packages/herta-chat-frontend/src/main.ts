@@ -1,25 +1,25 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import Varlet, { Input, Select, StyleProvider, Themes } from '@varlet/ui'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import Varlet, { Input, Select, StyleProvider, Themes } from '@varlet/ui';
 
-import App from './App.vue'
-import router from './router'
+import App from './App.vue';
+import router from './router';
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
-app.use(Varlet)
+app.use(createPinia());
+app.use(router);
+app.use(Varlet);
 
-app.mount('#vue-app')
+app.mount('#vue-app');
 
-import '@varlet/ui/es/style'
-import './style/main.css'
+import '@varlet/ui/es/style';
+import './style/main.css';
 
-StyleProvider(Themes.md3Light)
+StyleProvider(Themes.md3Light);
 Input.setPropsDefaults({
-  variant: 'outlined',
-})
+  variant: 'outlined'
+});
 Select.setPropsDefaults({
-  variant: 'outlined',
-})
+  variant: 'outlined'
+});

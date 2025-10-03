@@ -24,7 +24,15 @@ body {
 }
 
 :root {
-  --color-level-1: color-mix(in srgb, var(--color-body), var(--color-text) 10%;);
-  --color-level-2: color-mix(in srgb, var(--color-body), var(--color-text) 20%;);
+  --color-level-1: color-mix(
+    in srgb,
+    var(--color-body),
+    var(--color-text) 10%;
+  );
+  --color-level-2: color-mix(
+    in srgb,
+    var(--color-body),
+    var(--color-text) 20%;
+  );
   --color-level-3: color-mix(in srgb, var(--color-body), var(--color-text) 30%);
 }

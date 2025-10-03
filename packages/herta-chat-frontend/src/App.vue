@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import PackageJSON from '../../../package.json'
+import { RouterView } from 'vue-router';
+import PackageJSON from '../../../package.json';
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import PackageJSON from '../../../package.json'
     <var-app-bar>
       Herta Chat
       <span>&nbsp;|&nbsp;</span>
-      <span> v{{ PackageJSON.version }} </span>
+      <span>v{{ PackageJSON.version }}</span>
     </var-app-bar>
     <RouterView id="container" />
   </div>
