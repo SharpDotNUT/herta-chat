@@ -15,18 +15,27 @@ declare global {
   }
 }
 
-const file = path.join(dirname, '..', process.env.USER_FILES);
-try {
-  await fs.access(file);
-} catch (e) {
-  fs.writeFile(
-    file,
-    JSON.stringify({
-      apiKey: '',
-      rooms: []
-    })
-  );
+const tokens = process.env.TOKEN.split(',');
+const files = new Map<string, string>();
+for (const token of tokens) {
+  files.set(token, path.join(dirname, '..', process.env.USER_FILES, token));
 }
+await fs.mkdir(path.join(dirname, '..', process.env.USER_FILES), {
+  recursive: true
+});
+files.forEach(async (file) => {
+  try {
+    await fs.access(file);
+  } catch (e) {
+    fs.writeFile(
+      file,
+      JSON.stringify({
+        apiKey: '',
+        rooms: []
+      })
+    );
+  }
+});
 
 new Elysia({ adapter: node() })
   .use(cors())
@@ -44,7 +53,7 @@ new Elysia({ adapter: node() })
         const userToken = process.env.TOKEN;
         if (
           !ctx.headers.authorization ||
-          ctx.headers.authorization != userToken
+          !tokens.includes(ctx.headers.authorization)
         ) {
           ctx.set.status = 401;
           return {
@@ -55,19 +64,32 @@ new Elysia({ adapter: node() })
           };
         }
       })
-      .get('/sync', async (ctx) => {
-        try {
-          return JSON.parse(await fs.readFile(file, 'utf-8'));
-        } catch (e) {
-          ctx.set.status = 500;
-          return 'Error';
+      .get(
+        '/sync',
+        async (ctx) => {
+          try {
+            return JSON.parse(
+              await fs.readFile(files.get(ctx.headers.authorization)!, 'utf-8')
+            );
+          } catch (e) {
+            ctx.set.status = 500;
+            return 'Error';
+          }
+        },
+        {
+          headers: t.Object({
+            authorization: t.String()
+          })
         }
-      })
+      )
       .post(
         '/sync',
         async (ctx) => {
           try {
-            await fs.writeFile(file, JSON.stringify(ctx.body));
+            await fs.writeFile(
+              files.get(ctx.headers.authorization)!,
+              JSON.stringify(ctx.body)
+            );
             return 'ok';
           } catch (e) {
             ctx.set.status = 500;
@@ -75,6 +97,9 @@ new Elysia({ adapter: node() })
           }
         },
         {
+          headers: t.Object({
+            authorization: t.String()
+          }),
           body: t.Object({
             apiKey: t.String(),
             rooms: t.Array(t.Any())
