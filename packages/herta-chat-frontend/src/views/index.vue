@@ -18,6 +18,15 @@ const models = computed(() => {
     return !freeOnly.value || model.id.endsWith(':free');
   });
 });
+const editingMessageIndex = ref(-1);
+const editingMessage = ref('');
+const updateMessage = () => {
+  const index = editingMessageIndex.value;
+  if (store.currentRoom?.messages[index]) {
+    store.currentRoom.messages[index].content = editingMessage.value;
+    store.currentRoom.messages[index].tokens = undefined;
+  }
+};
 </script>
 
 <template>
@@ -73,6 +82,16 @@ const models = computed(() => {
         v-if="store.currentRoom && store.currentModel"
         id="chat-messages"
         ref="chatContainer">
+        <var-dialog
+          :show="editingMessageIndex > 0"
+          @confirm="
+            updateMessage();
+            editingMessageIndex = -1;
+          "
+          @cancel="editingMessageIndex = -1">
+          <template #title>编辑信息</template>
+          <var-input v-model="editingMessage" textarea />
+        </var-dialog>
         <div
           v-for="(message, index) in store.currentRoom?.messages"
           :key="index">
@@ -95,11 +114,21 @@ const models = computed(() => {
               <var-button text round @click="copyToClipboard(message.content)">
                 <var-icon name="content-copy" />
               </var-button>
+              <var-button
+                text
+                size="small"
+                @click="
+                  editingMessageIndex = index;
+                  editingMessage = message.content;
+                ">
+                编辑
+              </var-button>
+              <span>&nbsp;|&nbsp;</span>
               <span v-if="message.tokens">{{ message.tokens }} tokens |</span>
               <span v-if="message.reasoning">
                 {{ message.reasoning.length }} 思考字符 |
               </span>
-              <span>{{ message.content.length }} 字符</span>
+              <span>&nbsp;{{ message.content.length }} 字符</span>
             </div>
           </div>
         </div>
