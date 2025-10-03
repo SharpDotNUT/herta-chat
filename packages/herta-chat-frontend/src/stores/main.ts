@@ -5,6 +5,9 @@ import { watch } from 'vue'
 import pangu from 'pangu'
 import { Snackbar } from '@varlet/ui'
 import type { T_Model } from '@/scripts/types-model'
+import { useSyncStore } from './sync'
+
+const syncStore = useSyncStore()
 
 let abortController = null as AbortController | null
 export const useMainStore = defineStore('main', () => {
@@ -219,6 +222,30 @@ export const useMainStore = defineStore('main', () => {
     currentRoom.value.modify = new Date().getTime()
   }
 
+  const sync = async (type: 'pull' | 'push') => {
+    if (type === 'pull') {
+      const data = await syncStore.getData()
+      if (data) {
+        apiKey.value = data.apiKey
+        chatRooms.value = data.rooms
+      } else {
+        Snackbar.error('同步失败')
+      }
+    } else {
+      syncStore
+        .postData({
+          apiKey: apiKey.value,
+          rooms: chatRooms.value,
+        })
+        .then(() => {
+          Snackbar.success('同步成功')
+        })
+        .catch((e) => {
+          Snackbar.error('同步失败')
+        })
+    }
+  }
+
   return {
     chatRooms,
     currentRoomID,
@@ -234,6 +261,7 @@ export const useMainStore = defineStore('main', () => {
     abortRequest,
     sendMessage,
     createRoom,
+    sync,
   }
 })
 

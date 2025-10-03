@@ -2,11 +2,13 @@
 import { useMainStore } from '@/stores/main'
 import { watchEffect } from 'vue'
 import { ref } from 'vue'
+import CloudSync from './CloudSync.vue'
 
 const store = useMainStore()
 const renameRoomID = ref('')
 const roomName = ref('')
 
+const showConfig = ref(false)
 const showDialog = ref(false)
 watchEffect(() => {
   showDialog.value = renameRoomID.value !== ''
@@ -24,8 +26,12 @@ const renameRoom = () => {
 
 <template>
   <div class="container-rooms">
+    <CloudSync v-model="showConfig" />
     <div id="new">
       <var-button block @click="store.createRoom">创建新房间</var-button>
+      <var-button block @click="showConfig = true">配置云同步参数</var-button>
+      <var-button block @click="store.sync('pull')">拉取云端数据</var-button>
+      <var-button block @click="store.sync('push')">推送云端数据</var-button>
     </div>
     <div id="rooms">
       <var-cell
@@ -65,6 +71,9 @@ const renameRoom = () => {
   overflow-y: hidden;
 }
 #new {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   padding: 5px;
   flex-shrink: 0;
 }

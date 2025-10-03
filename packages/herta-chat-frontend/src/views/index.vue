@@ -6,6 +6,7 @@ import { ReasoningEfforts } from '@/scripts/types'
 import { copyToClipboard } from '@/scripts/uiltsMain'
 import ChatRooms from '@/components/ChatRooms.vue'
 import { computed } from 'vue'
+import CloudSync from '@/components/CloudSync.vue'
 
 const store = useMainStore()
 const userInput = ref('')

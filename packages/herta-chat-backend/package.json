@@ -1,0 +1,18 @@
+{
+  "name": "herta-chat-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx ./main.ts"
+  },
+  "devDependencies": {
+    "tsx": "4",
+    "typescript": "5"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^1.4.0",
+    "@elysiajs/node": "1",
+    "@types/node": "^22.18.8",
+    "elysia": "1"
+  }
+}

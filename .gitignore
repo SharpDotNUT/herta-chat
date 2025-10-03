@@ -30,3 +30,6 @@ coverage
 *.tsbuildinfo
 
 .vscode
+
+test
+.env.development
